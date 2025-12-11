@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import utez.edu.mx.integradoraderick.ui.Navigation
 import utez.edu.mx.integradoraderick.ui.theme.IntegradoraDerickTheme
 
 class MainActivity : ComponentActivity() {
@@ -12,7 +13,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             IntegradoraDerickTheme {
-
+                Navigation()
             }
         }
     }
