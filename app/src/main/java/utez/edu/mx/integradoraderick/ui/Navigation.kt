@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import utez.edu.mx.integradoraderick.ui.screens.LoginScreen
+import utez.edu.mx.integradoraderick.ui.screens.NewProductScreen
 import utez.edu.mx.integradoraderick.ui.screens.RegistroScreen
 
 @Composable
@@ -21,10 +22,11 @@ fun Navigation() {
     //val database = MainDatabase.getDatabase(context)
     //val repository = MainRepository(database.Dao)
 
-    NavHost(navController = navController, startDestination = "Login") {
+    NavHost(navController = navController, startDestination = "NewProduct") {
 
         composable("Login") { LoginScreen() }
         composable("Register") { RegistroScreen() }
+        composable("NewProduct"){ NewProductScreen() }
 
     }
 }
