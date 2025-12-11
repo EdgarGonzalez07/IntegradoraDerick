@@ -42,7 +42,7 @@ fun RegistroScreen(){
 
         Text(
             text = "Bienvenido",
-            fontSize = 20.sp,
+            fontSize = 21.sp,
         )
 
 
