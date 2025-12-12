@@ -1,35 +1,49 @@
 package utez.edu.mx.integradoraderick.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import androidx.lifecycle.viewModelScope
 
+import kotlinx.coroutines.launch
+import utez.edu.mx.integradoraderick.data.model.usuarios.Usuario
+import utez.edu.mx.integradoraderick.data.model.usuarios.UsuarioRepository
+import utez.edu.mx.integradoraderick.ui.utils.Asistente
+import utez.edu.mx.integradoraderick.ui.utils.ControladorSesiones
 
-data class LoginUiState(
-    val email: String = "",
-    val password: String = ""
-)
+class LoginViewModel(
+    private val repo: UsuarioRepository,
+    private val controlador: ControladorSesiones,
+    private val context: Context
+) : ViewModel() {
 
-class LoginViewModel : ViewModel() {
+    fun logear (email: String, password: String, onResult: (Boolean, String?) -> Unit){
+        viewModelScope.launch {
+            if(!Asistente.ServidorDisponible(context)) {
+                onResult(false, "No hay conexion a internet. Verifica tu conexion.")
+                return@launch
+            }
 
-
-    private val _uiState = MutableStateFlow(LoginUiState())
-
-
-    val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
-
-    fun onEmailChange(newEmail: String) {
-        _uiState.value = _uiState.value.copy(email = newEmail)
-    }
-
-    fun onPasswordChange(newPassword: String) {
-        _uiState.value = _uiState.value.copy(password = newPassword)
-    }
-
-    fun onLoginClick() {
-    }
-
-    fun onRegisterClick() {
+            val result =repo.loguear(Usuario(nombre = "", correo = email, contrasenia = password))
+            if(result.isSuccess){
+                val user = result.getOrNull()
+                if (user != null) {
+                    controlador.guardarUsuario(user.id, user.nombre, user.correo)
+                    onResult(true, null)
+                } else {
+                    onResult(false, "Datos corruptos o dañados.")
+                }
+            } else {
+                val excepcion =result.exceptionOrNull()
+                val mensajeError = excepcion?.message ?: ""
+                val usermessage = when {
+                    mensajeError.contains("401") -> "Correo o la contraseña son incorrectos."
+                    mensajeError.contains("400") -> "Falta llenar campos necesarios"
+                    mensajeError.contains("404") -> "No se encontro el usuario"
+                    excepcion != null -> Asistente.mensajeError(excepcion)
+                    else -> "Error al iniciar sesión: $mensajeError, intente nuevamente."
+                }
+                onResult(false, usermessage)
+            }
+        }
     }
 }

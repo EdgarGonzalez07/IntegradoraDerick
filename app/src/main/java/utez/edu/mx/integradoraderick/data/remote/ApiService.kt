@@ -1,0 +1,24 @@
+package utez.edu.mx.integradoraderick.data.remote
+
+import retrofit2.Response
+import retrofit2.http.Body
+import retrofit2.http.DELETE
+import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.Path
+import utez.edu.mx.integradoraderick.data.model.usuarios.Usuario
+
+interface ApiService {
+
+    @POST("/register")
+    suspend fun registrarUsuario(@Body usuario: Usuario): Response<Usuario>
+
+    @POST("/login")
+    suspend fun logear(@Body usuario: Usuario): Response<Usuario>
+
+    @PUT("/usuarios/{id}")
+    suspend fun actualizarUsuario(@Path("id") id:Int, @Body usuario: Usuario): Response<Usuario>
+
+    @DELETE("/usuarios/{id}")
+    suspend fun borrarUsuario(@Path("id") id:Int): Response<Void>
+}
