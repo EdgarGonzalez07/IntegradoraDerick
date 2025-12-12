@@ -13,16 +13,25 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import utez.edu.mx.integradoraderick.R
+import utez.edu.mx.integradoraderick.viewmodel.LoginViewModel
 
 @Composable
-fun LoginScreen(){
+fun LoginScreen(
+    viewModel: LoginViewModel = viewModel()
+){
+    val uiState by viewModel.uiState.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -50,9 +59,10 @@ fun LoginScreen(){
                 .size(size = 350.dp)
 
         )
+
         OutlinedTextField(
-            value = "",
-            onValueChange = {},
+            value = uiState.email,
+            onValueChange = {viewModel.onEmailChange(it)},
             placeholder = { Text(text = "Email") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             singleLine = true,
@@ -62,8 +72,8 @@ fun LoginScreen(){
         Spacer(modifier = Modifier.padding(15.dp))
 
         OutlinedTextField(
-            value = "",
-            onValueChange = {},
+            value = uiState.password,
+            onValueChange = {viewModel.onPasswordChange(it)},
             placeholder = { Text(text = "Contraseña") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             singleLine = true,
@@ -74,7 +84,7 @@ fun LoginScreen(){
         Spacer(modifier = Modifier.padding(15.dp))
 
         Button(
-            onClick = {  },
+            onClick = { viewModel.onLoginClick() },
             modifier = Modifier
                 .size(width = 180.dp, height = 50.dp)
         ) {
@@ -85,7 +95,7 @@ fun LoginScreen(){
         Spacer(modifier = Modifier.padding(10.dp))
 
         Button(
-            onClick = {  },
+            onClick = { viewModel.onRegisterClick() },
             modifier = Modifier
                 .size(width = 140.dp, height = 50.dp)
         ) {

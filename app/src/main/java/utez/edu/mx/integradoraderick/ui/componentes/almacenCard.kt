@@ -22,15 +22,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import utez.edu.mx.integradoraderick.data.model.almacenes.Almacen
 
 @Composable
 fun AlmacenAdminCard(
-    almacen: almacen,
-    onShow: (almacen) -> Unit,
+    almacen: Almacen,
+    onShow: (Almacen) -> Unit,
     modifier: Modifier = Modifier
 ){
     val passportBgColor = Color(0xFFF5F8F0)
@@ -62,7 +62,7 @@ fun AlmacenAdminCard(
                 ){
                     DataField("Nombre:", almacen.nombre.uppercase())
                     DataField("Ubicación:", almacen.ubicacion)
-                    DataField("Capacidad:", almacen.capacidad)
+                    DataField("Capacidad:", almacen.capacidad.toString())
 
                 }
             }
