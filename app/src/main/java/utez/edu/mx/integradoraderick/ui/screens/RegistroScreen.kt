@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import utez.edu.mx.integradoraderick.R
 import utez.edu.mx.integradoraderick.ui.componentes.botones.BotonPeru
+import utez.edu.mx.integradoraderick.ui.componentes.camposdetexto.CampoDeTextoPeru
 import utez.edu.mx.integradoraderick.ui.componentes.dialogos.AlertPeru
 import utez.edu.mx.integradoraderick.viewmodel.RegisterUserViewModel
 
@@ -69,47 +70,42 @@ fun RegistroScreen(viewModel: RegisterUserViewModel, navController: NavControlle
 
         Spacer(modifier = Modifier.padding(10.dp))
 
-        OutlinedTextField(
+        CampoDeTextoPeru(
             value = name,
             onValueChange = { name = it },
-            placeholder = { Text(text = "Usuario") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            singleLine = true,
-            maxLines = 1
+            label = "Usuario",
+            keyboardType = KeyboardType.Text
         )
 
         Spacer(modifier = Modifier.padding(15.dp))
 
-        OutlinedTextField(
+        CampoDeTextoPeru(
             value = email,
             onValueChange = { email = it },
-            placeholder = { Text(text = "Email") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            singleLine = true,
-            maxLines = 1
-            )
+            label = "Email",
+            keyboardType = KeyboardType.Email
+        )
 
         Spacer(modifier = Modifier.padding(15.dp))
 
-        OutlinedTextField(
+        // Campo para la contraseña (con texto oculto)
+        CampoDeTextoPeru(
             value = password,
             onValueChange = { password = it },
-            placeholder = { Text(text = "Contraseña") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            singleLine = true,
-            maxLines = 1
+            label = "Contraseña",
+            keyboardType = KeyboardType.Password
         )
 
         Spacer(modifier = Modifier.padding(15.dp))
 
-        OutlinedTextField(
+        // Campo para confirmar la contraseña
+        CampoDeTextoPeru(
             value = password2,
             onValueChange = { password2 = it },
-            placeholder = { Text(text = "Confirmar Contraseña") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            singleLine = true,
-            maxLines = 1,
+            label = "Confirmar Contraseña",
+            keyboardType = KeyboardType.Password
         )
+
 
         Spacer(modifier = Modifier.padding(15.dp))
 
