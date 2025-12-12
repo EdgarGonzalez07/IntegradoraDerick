@@ -15,6 +15,10 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -23,10 +27,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import utez.edu.mx.integradoraderick.R
+import utez.edu.mx.integradoraderick.ui.componentes.botones.BotonPeru
+import utez.edu.mx.integradoraderick.ui.componentes.camposdetexto.CampoDeTextoPeru
 
 @Composable
 fun RegistroScreen(){
-    Column(
+
+    var usuario by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var contrasena by remember { mutableStateOf("") }
+    var confirmarContrasena by remember { mutableStateOf("")}
+        Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(30.dp),
@@ -50,72 +61,55 @@ fun RegistroScreen(){
             painter = painterResource(id = R.drawable.almacen),
             contentDescription = "Logo",
             modifier = Modifier
-                .size(250.dp)
+                .size(200.dp)
         )
 
         Spacer(modifier = Modifier.padding(10.dp))
 
-        OutlinedTextField(
-            modifier = Modifier
-                .fillMaxWidth(),
-            value = "",
-            onValueChange = {},
-            placeholder = { Text(text = "Usuario") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            singleLine = true,
-            maxLines = 1,
-        )
+            CampoDeTextoPeru(
+                value = usuario,
+                onValueChange = { usuario = it },
+                label = "Usuario",
+                keyboardType = KeyboardType.Text
+            )
 
-        Spacer(modifier = Modifier.padding(15.dp))
+            Spacer(modifier = Modifier.padding(15.dp))
 
-        OutlinedTextField(
-            modifier = Modifier
-                .fillMaxWidth(),
-            value = "",
-            onValueChange = {},
-            placeholder = { Text(text = "Email") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            singleLine = true,
-            maxLines = 1,
+            CampoDeTextoPeru(
+                value = email,
+                onValueChange = { email = it },
+                label = "Email",
+                keyboardType = KeyboardType.Email
+            )
+
+            Spacer(modifier = Modifier.padding(15.dp))
+
+            CampoDeTextoPeru(
+                value = contrasena,
+                onValueChange = { contrasena = it },
+                label = "Contraseña",
+                keyboardType = KeyboardType.Password
+            )
+
+            Spacer(modifier = Modifier.padding(15.dp))
+
+            CampoDeTextoPeru(
+                value = confirmarContrasena,
+                onValueChange = { confirmarContrasena = it },
+                label = "Confirmar Contraseña",
+                keyboardType = KeyboardType.Password
             )
 
         Spacer(modifier = Modifier.padding(15.dp))
 
-        OutlinedTextField(
-            modifier = Modifier
-                .fillMaxWidth(),
-            value = "",
-            onValueChange = {},
-            placeholder = { Text(text = "Contraseña") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            singleLine = true,
-            maxLines = 1,
-        )
-
-        Spacer(modifier = Modifier.padding(15.dp))
-
-        OutlinedTextField(
-            modifier = Modifier
-                .fillMaxWidth(),
-            value = "",
-            onValueChange = {},
-            placeholder = { Text(text = "Confirmar Contraseña") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            singleLine = true,
-            maxLines = 1,
-        )
-
-        Spacer(modifier = Modifier.padding(15.dp))
-
         Spacer(modifier = Modifier.padding(10.dp))
 
-        Button(
-            onClick = {  },
+        BotonPeru(
+            text = "Registrarse",
+            onClick = { /* Aquí irá la lógica para agregar el producto */ },
             modifier = Modifier
-                .size(width = 140.dp, height = 50.dp)
-        ) {
-            Text(text = "Registrarse")
-        }
+                .size(width = 180.dp, height = 50.dp)
+        )
     }
 }
 
