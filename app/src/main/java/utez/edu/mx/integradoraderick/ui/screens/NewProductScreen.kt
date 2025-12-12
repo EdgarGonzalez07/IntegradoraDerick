@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import utez.edu.mx.integradoraderick.R
+import utez.edu.mx.integradoraderick.ui.componentes.botones.BotonPeru
 
 @Composable
 fun NewProductScreen(){
@@ -134,16 +135,12 @@ fun NewProductScreen(){
         Spacer(modifier = Modifier.padding(15.dp))
 
 
-        Button(
-            onClick = {  },
+        BotonPeru(
+            text = "Agregar producto",
+            onClick = { /* Aquí irá la lógica para agregar el producto */ },
             modifier = Modifier
                 .size(width = 180.dp, height = 50.dp)
-        ) {
-            Text(
-                text = "Agregar producto",
-                fontSize = 15.sp,
-            )
-        }
+        )
 
 
     }

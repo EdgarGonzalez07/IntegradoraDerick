@@ -23,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import utez.edu.mx.integradoraderick.R
+import utez.edu.mx.integradoraderick.ui.componentes.botones.BotonPeru
 
 @Composable
 fun RegistroScreen(){
@@ -109,13 +110,12 @@ fun RegistroScreen(){
 
         Spacer(modifier = Modifier.padding(10.dp))
 
-        Button(
-            onClick = {  },
+        BotonPeru(
+            text = "Registrarse",
+            onClick = { /* Aquí irá la lógica para agregar el producto */ },
             modifier = Modifier
-                .size(width = 140.dp, height = 50.dp)
-        ) {
-            Text(text = "Registrarse")
-        }
+                .size(width = 180.dp, height = 50.dp)
+        )
     }
 }
 
