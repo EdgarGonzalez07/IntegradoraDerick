@@ -1,8 +1,7 @@
 package utez.edu.mx.integradoraderick.ui.screens
 
-import android.widget.Space
+import android.util.Log.e
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,7 +12,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,21 +21,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import utez.edu.mx.integradoraderick.R
 import utez.edu.mx.integradoraderick.ui.componentes.botones.BotonPeru
-import utez.edu.mx.integradoraderick.ui.componentes.camposdetexto.CampoDeTextoPeru
+import utez.edu.mx.integradoraderick.ui.componentes.dialogos.AlertPeru
+import utez.edu.mx.integradoraderick.viewmodel.RegisterUserViewModel
 
 @Composable
-fun RegistroScreen(){
+fun RegistroScreen(viewModel: RegisterUserViewModel, navController: NavController){
 
-    var usuario by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
-    var contrasena by remember { mutableStateOf("") }
-    var confirmarContrasena by remember { mutableStateOf("")}
-        Column(
+    var password by remember { mutableStateOf("") }
+    var password2 by remember { mutableStateOf("") }
+    var errorMessage by remember { mutableStateOf("") }
+    var showError by remember { mutableStateOf(false) }
+    var showSuccessDialog by remember { mutableStateOf(false) }
+
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(30.dp),
@@ -61,60 +64,110 @@ fun RegistroScreen(){
             painter = painterResource(id = R.drawable.almacen),
             contentDescription = "Logo",
             modifier = Modifier
-                .size(200.dp)
+                .size(250.dp)
         )
 
         Spacer(modifier = Modifier.padding(10.dp))
 
-            CampoDeTextoPeru(
-                value = usuario,
-                onValueChange = { usuario = it },
-                label = "Usuario",
-                keyboardType = KeyboardType.Text
-            )
+        OutlinedTextField(
+            value = name,
+            onValueChange = { name = it },
+            placeholder = { Text(text = "Usuario") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+            singleLine = true,
+            maxLines = 1
+        )
 
-            Spacer(modifier = Modifier.padding(15.dp))
+        Spacer(modifier = Modifier.padding(15.dp))
 
-            CampoDeTextoPeru(
-                value = email,
-                onValueChange = { email = it },
-                label = "Email",
-                keyboardType = KeyboardType.Email
-            )
-
-            Spacer(modifier = Modifier.padding(15.dp))
-
-            CampoDeTextoPeru(
-                value = contrasena,
-                onValueChange = { contrasena = it },
-                label = "Contraseña",
-                keyboardType = KeyboardType.Password
-            )
-
-            Spacer(modifier = Modifier.padding(15.dp))
-
-            CampoDeTextoPeru(
-                value = confirmarContrasena,
-                onValueChange = { confirmarContrasena = it },
-                label = "Confirmar Contraseña",
-                keyboardType = KeyboardType.Password
+        OutlinedTextField(
+            value = email,
+            onValueChange = { email = it },
+            placeholder = { Text(text = "Email") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            singleLine = true,
+            maxLines = 1
             )
 
         Spacer(modifier = Modifier.padding(15.dp))
 
-        Spacer(modifier = Modifier.padding(10.dp))
+        OutlinedTextField(
+            value = password,
+            onValueChange = { password = it },
+            placeholder = { Text(text = "Contraseña") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+            singleLine = true,
+            maxLines = 1
+        )
+
+        Spacer(modifier = Modifier.padding(15.dp))
+
+        OutlinedTextField(
+            value = password2,
+            onValueChange = { password2 = it },
+            placeholder = { Text(text = "Confirmar Contraseña") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+            singleLine = true,
+            maxLines = 1,
+        )
+
+        Spacer(modifier = Modifier.padding(15.dp))
 
         BotonPeru(
-            text = "Registrarse",
-            onClick = { /* Aquí irá la lógica para agregar el producto */ },
-            modifier = Modifier
-                .size(width = 180.dp, height = 50.dp)
+            "Registrar",
+            {
+                if(name.isEmpty() || email.isEmpty() || password.isEmpty() || password2.isEmpty()){
+                    errorMessage = "Llena todos los campos porfavor."
+                    showError = true
+                } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+                    errorMessage = "Correo electronico invalido."
+                    showError = true
+                } else if (password != password2){
+                    errorMessage = "Las contraseñas no coinciden."
+                    showError = true
+                } else {
+                    viewModel.registrar(name, email, password) { success, error ->
+                        if(success){
+                            showSuccessDialog = true
+                        } else {
+                            errorMessage = error ?: "Error al realizar el registro"
+                            showError = true
+                        }
+                    }
+                }
+            }
         )
     }
-}
 
-@Preview(showBackground = true)
-@Composable
-fun RegistroScreenPreview() {
-    RegistroScreen()
+    if(showError){
+        AlertPeru(
+            titulo = "Error",
+            mensaje = errorMessage,
+            onConfirm = { showError = false },
+            confirmText = "Aceptar",
+            onDismiss = { showError = false },
+            dismissText = ""
+        )
+    }
+
+    if(showSuccessDialog){
+        AlertPeru(
+            titulo = "Registro Exitoso",
+            mensaje = "Tu cuenta ha sido creada con exito.",
+            confirmText = "Ir al login",
+            onConfirm = {
+                showSuccessDialog = false
+                navController.navigate("Login"){
+                    popUpTo("Login"){inclusive = true}
+                }
+            },
+            dismissText = "",
+            onDismiss = { showSuccessDialog = false
+                navController.navigate("Login"){
+                    popUpTo("Login"){inclusive = true}
+                }
+            }
+        )
+    }
+
 }

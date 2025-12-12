@@ -12,7 +12,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.autofill.contentType
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -33,7 +32,8 @@ fun AlertPeru(
         Column(
             modifier = Modifier
                 .width(250.dp)
-                .background(color = Color.LightGray),
+                .background(color = Color.LightGray)
+                .height(300.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ){
             Column(
@@ -69,15 +69,10 @@ fun AlertPeru(
                         color = Color.Black,
                     )
                 }
-                Box(
-                    modifier = Modifier.width(0.5.dp)
-                        .height(30.dp)
-                        .background(Color.Black)
-                )
             }
 
             Box(
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(0.3f)
                     .clickable(onClick = onConfirm)
                     .padding(vertical = 10.dp),
                 contentAlignment = Alignment.Center

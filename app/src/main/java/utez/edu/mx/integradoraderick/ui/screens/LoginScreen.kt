@@ -122,7 +122,7 @@ fun LoginScreen(
         BotonPeruanisimo(
             "Registrate aqui si no tienes una cuenta.",
             {
-                navController.navigate("registro"){
+                navController.navigate("Register"){
                     launchSingleTop = true
                     restoreState = true
                 }

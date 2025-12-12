@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import utez.edu.mx.integradoraderick.ui.componentes.AlmacenAdminCard
-
+/*
 @Composable
 fun MainScreen(viewModel: AlmacenViewModel, navController: NavController) {
     Column(
@@ -49,3 +49,5 @@ fun MainScreen(viewModel: AlmacenViewModel, navController: NavController) {
         }
     }
 }
+
+ */
