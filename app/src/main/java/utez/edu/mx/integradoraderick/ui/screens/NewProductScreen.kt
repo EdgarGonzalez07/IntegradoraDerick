@@ -33,20 +33,20 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import utez.edu.mx.integradoraderick.R
 import utez.edu.mx.integradoraderick.ui.componentes.botones.BotonPeru
+import utez.edu.mx.integradoraderick.ui.componentes.camposdetexto.CampoDeTextoPeru
 
 @Composable
 fun NewProductScreen(){
 
 
 
-    // 6. Estado para guardar el URI (la dirección) de la imagen seleccionada.
+    var nombre by remember { mutableStateOf("") }
+    var ubicacion by remember { mutableStateOf("") }
+    var capacidad by remember { mutableStateOf("") }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
-
-    // 7. Creamos el "lanzador" que abrirá la galería del teléfono.
     val imagePickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent() // El "contrato" para obtener contenido
+        contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
-        // Este bloque se ejecuta cuando el usuario selecciona una imagen (o cierra la galería).
         imageUri = uri
     }
 
@@ -64,19 +64,17 @@ fun NewProductScreen(){
         )
 
         Spacer(modifier = Modifier.padding(10.dp))
-        // 8. Contenedor para la imagen. Lo hacemos "clickable" para lanzar la galería.
+
         Box(
             modifier = Modifier
                 .size(350.dp)
                 .clickable {
-                    // Al hacer clic, lanzamos el selector de imágenes.
-                    // "image/*" significa que solo mostrará archivos de imagen.
+
                     imagePickerLauncher.launch("image/*")
                 },
             contentAlignment = Alignment.Center
         ) {
             if (imageUri == null) {
-                // Estado inicial: Muestra una imagen por defecto y un texto de ayuda.
                 Image(
                     painter = painterResource(id = R.drawable.agregar),
                     contentDescription = "Logo",
@@ -84,13 +82,12 @@ fun NewProductScreen(){
                 )
 
             } else {
-                // Estado cuando el usuario ya seleccionó una imagen.
-                // 9. Usamos AsyncImage de la librería Coil para mostrar la imagen desde su URI.
+
                 AsyncImage(
                     model = imageUri,
                     contentDescription = "Imagen del producto seleccionada",
                     modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop // Para que la imagen se ajuste bien.
+                    contentScale = ContentScale.Crop
                 )
             }
 
@@ -100,38 +97,30 @@ fun NewProductScreen(){
         Text(text = "Toca para seleccionar una imagen", color = Color.Black)
         Spacer(modifier = Modifier.padding(5.dp))
 
-        OutlinedTextField(
-            value = "",
-            onValueChange = {},
-            placeholder = { Text(text = "Nombre") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            singleLine = true,
-            maxLines = 1,
+        CampoDeTextoPeru(
+            value = nombre,
+            onValueChange = { nombre = it },
+            label = "Nombre",
+            keyboardType = KeyboardType.Text
         )
 
         Spacer(modifier = Modifier.padding(15.dp))
 
-        OutlinedTextField(
-            value = "",
-            onValueChange = {},
-            placeholder = { Text(text = "Ubicacion") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            singleLine = true,
-            maxLines = 1,
-
-            )
+        CampoDeTextoPeru(
+            value = ubicacion,
+            onValueChange = { ubicacion = it },
+            label = "Ubicación",
+            keyboardType = KeyboardType.Text
+        )
 
         Spacer(modifier = Modifier.padding(15.dp))
 
-        OutlinedTextField(
-            value = "",
-            onValueChange = {},
-            placeholder = { Text(text = "Capacidad") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            singleLine = true,
-            maxLines = 1,
+        CampoDeTextoPeru(
+            value = capacidad,
+            onValueChange = { capacidad = it },
+            label = "Capacidad",
+            keyboardType = KeyboardType.Number
         )
-
         Spacer(modifier = Modifier.padding(15.dp))
 
 
