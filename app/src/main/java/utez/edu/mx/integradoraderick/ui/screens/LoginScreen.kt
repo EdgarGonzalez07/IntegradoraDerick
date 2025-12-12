@@ -1,5 +1,6 @@
 package utez.edu.mx.integradoraderick.ui.screens
 
+import android.util.Log.v
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -15,22 +17,33 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import utez.edu.mx.integradoraderick.R
+import utez.edu.mx.integradoraderick.ui.componentes.botones.BotonPeru
+import utez.edu.mx.integradoraderick.ui.componentes.botones.BotonPeruanisimo
+import utez.edu.mx.integradoraderick.ui.componentes.dialogos.AlertPeru
 import utez.edu.mx.integradoraderick.viewmodel.LoginViewModel
 
 @Composable
 fun LoginScreen(
-    viewModel: LoginViewModel = viewModel()
+    viewModel: LoginViewModel, navController: NavController
 ){
-    val uiState by viewModel.uiState.collectAsState()
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var errormsg by remember { mutableStateOf("") }
+    var showDialog by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -61,8 +74,8 @@ fun LoginScreen(
         )
 
         OutlinedTextField(
-            value = uiState.email,
-            onValueChange = {viewModel.onEmailChange(it)},
+            value = email,
+            onValueChange = { email = it},
             placeholder = { Text(text = "Email") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             singleLine = true,
@@ -72,34 +85,60 @@ fun LoginScreen(
         Spacer(modifier = Modifier.padding(15.dp))
 
         OutlinedTextField(
-            value = uiState.password,
-            onValueChange = {viewModel.onPasswordChange(it)},
+            value = password,
+            onValueChange = {password = it},
             placeholder = { Text(text = "Contraseña") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             singleLine = true,
             maxLines = 1,
-
+            visualTransformation = PasswordVisualTransformation()
             )
 
         Spacer(modifier = Modifier.padding(15.dp))
 
-        Button(
-            onClick = { viewModel.onLoginClick() },
-            modifier = Modifier
-                .size(width = 180.dp, height = 50.dp)
-        ) {
-            Text(text = "Iniciar Sesión",
-                fontSize = 15.sp,)
-        }
+        BotonPeru(
+            "Iniciar Sesion",
+            {
+                if(email.isNotEmpty() && password.isNotEmpty()){
+                    errormsg = "Llena todos los campos porfavor."
+                    showDialog = true
+                } else {
+                    viewModel.logear(email, password) { success, message ->
+                        if(success){
+                            navController.navigate("home") {
+                                popUpTo("login") { inclusive = true}
+                            }
+                        } else {
+                            errormsg = message ?:"Datos no coincidentes"
+                            showDialog = true
+                        }
+                    }
+                }
+            }
+        )
 
         Spacer(modifier = Modifier.padding(10.dp))
 
-        Button(
-            onClick = { viewModel.onRegisterClick() },
-            modifier = Modifier
-                .size(width = 140.dp, height = 50.dp)
-        ) {
-            Text(text = "Registrarse")
-        }
+        BotonPeruanisimo(
+            "Registrate aqui si no tienes una cuenta.",
+            {
+                navController.navigate("registro"){
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            }
+        )
     }
+
+    if(showDialog){
+        AlertPeru(
+            titulo = "Error",
+            mensaje = errormsg,
+            onConfirm = { showDialog = false },
+            confirmText = "Aceptar",
+            onDismiss = { showDialog = false },
+            dismissText = ""
+        )
+    }
+
 }

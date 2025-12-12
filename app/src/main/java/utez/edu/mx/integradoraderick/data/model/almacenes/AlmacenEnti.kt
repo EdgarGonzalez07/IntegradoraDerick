@@ -10,5 +10,5 @@ data class Almacen(
     val nombre: String,
     val ubicacion: String,
     val capacidad: Int,
-    val imgUrl: String
+    val imgUrl:String
 )
