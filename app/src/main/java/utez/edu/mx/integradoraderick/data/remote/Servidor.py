@@ -1,5 +1,6 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
+from werkzeug.utils import secure_filename
 import sqlite3
 import os
 import datetime
@@ -14,6 +15,11 @@ LOG_REGISTRATIONS = "h_registros.txt"
 LOG_LOGINS = "h_logins.txt"
 LOG_UPDATES = "h_updates.txt"
 LOG_DELETES = "h_deletes.txt"
+
+UPLOAD_FOLDER = "uploads"
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
 
 def get_cdmx_time():
     mx_time = datetime.datetime.now(pytz.timezone('America/Mexico_City'))
@@ -35,7 +41,7 @@ def init_db():
                   name TEXT NOT NULL,
                   location TEXT NOT NULL UNIQUE,
                   capacity INTEGER,
-                  imgUrl TEXT NOT NULL)''')
+                  image TEXT NOT NULL)''')
     conn.commit()
     conn.close()
     print(">>> BD lista!")
@@ -67,8 +73,10 @@ def register():
 
         return jsonify({'id': user_id, 'username': username, 'email': email}), 201
     except sqlite3.IntegrityError:
+        conn.close()
         return jsonify({'error': 'El email que intentas registrar ya existe.'}), 409
     except Exception as e:
+        conn.close()
         return jsonify({'error': str(e)}), 500
 
 @app.route('/almacenes', methods=['POST'])
@@ -79,17 +87,17 @@ def register_almacen():
         name = data.get('name')
         location = data.get('location')
         capacity = int(data.get('capacity'))
-        imgUrl = data.get('imgUrl')
+        image = data.get('image')
 
-        if not name or not location or capacity is None or not imgUrl:
+        if not name or not location or capacity is None or not image:
             return jsonify({'error': 'Faltan campos requeridos'}), 400
 
         conn = sqlite3.connect(DataBase_NAME)
         c = conn.cursor()
         c.execute("""
-            INSERT INTO almacenes (name, location, capacity, imgUrl)
+            INSERT INTO almacenes (name, location, capacity, image)
             VALUES (?, ?, ?, ?)
-        """,(name, location, capacity, imgUrl))
+        """,(name, location, capacity, image))
         conn.commit()
         almacen_id = c.lastrowid
         conn.close()
@@ -99,15 +107,44 @@ def register_almacen():
             'name': name,
             'location': location,
             'capacity': capacity,
-            'imgUrl': imgUrl
+            'imgUrl': image
         }), 201
     except ValueError:
+        conn.close()
         return jsonify({'error': 'Capacidad debe ser un número'}), 400
     except sqlite3.IntegrityError:
+        conn.close()
         return jsonify({'error': 'La ubicación ya existe'}), 409
     except Exception as e:
         print("ERROR:", e)
+        conn.close()
         return jsonify({'error': str(e)}), 500
+
+@app.route('/upload', methods=['POST'])
+def upload_image():
+    if "image" not in request.files:
+        return jsonify({"error": "No image file"}), 400
+
+    image = request.files["image"]
+
+    if image.filename == "":
+        return jsonify({"error": "Empty filename"}), 401
+
+    filename = secure_filename(image.filename)
+    unique_name = f"{int(datetime.datetime.now().timestamp())}_{filename}"
+
+    save_path = os.path.join(app.config["UPLOAD_FOLDER"], unique_name)
+    image.save(save_path)
+
+    image_url = f"https://{request.host}/uploads/{unique_name}"
+
+    return jsonify({
+        "url": image_url
+    }), 201
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
 
 
 @app.route('/usuarios', methods=['GET'])
@@ -131,6 +168,7 @@ def get_all_users():
         conn.close()
         return jsonify(lista_usuarios), 200
     except Exception as e:
+        conn.close()
         return jsonify({'error': str(e)}), 500
 
 @app.route('/almacenes', methods=['GET'])
@@ -149,12 +187,13 @@ def obtener_almacenes():
                 "name": row["name"],
                 "location": row["location"],
                 "capacity": row["capacity"],
-                "imgUrl": row["imgUrl"]
+                "image": row["image"]
             })
         conn.close()
         return jsonify(almacenes), 200
 
     except Exception as e:
+        conn.close()
         return jsonify({'error': str(e)}), 500
 
 @app.route('/login', methods=['POST'])
@@ -194,7 +233,7 @@ def obtener_almacen(almacen_id):
             "name": row["name"],
             "location": row["location"],
             "capacity": row["capacity"],
-            "imgUrl": row["imgUrl"]
+            "image": row["image"]
         }), 200
     else:
         return jsonify({'error': 'Almacén no encontrado'}), 404
@@ -222,6 +261,7 @@ def update_user(user_id):
 
         return jsonify({'id': user_id, 'username': username, 'email': email}), 200
     except Exception as e:
+        conn.close()
         return jsonify({'error': str(e)}), 500
 
 @app.route('/almacenes/<int:almacen_id>', methods=['PUT'])
@@ -230,23 +270,25 @@ def actualizar_almacen(almacen_id):
     name = data.get('name')
     location = data.get('location')
     capacity = data.get('capacity')
-    imgUrl = data.get('imgUrl')
+    image = data.get('image')
 
     try:
         conn = sqlite3.connect(DataBase_NAME)
         c = conn.cursor()
         c.execute("""
             UPDATE almacenes
-            SET name = ?, location = ?, capacity = ?, imgUrl = ?
+            SET name = ?, location = ?, capacity = ?, image = ?
             WHERE id = ?
-        """, (name, location, capacity, imgUrl, almacen_id))
+        """, (name, location, capacity, image, almacen_id))
         conn.commit()
         conn.close()
 
         return jsonify({'message': 'Almacén actualizado correctamente'}), 200
     except sqlite3.IntegrityError:
+        conn.close()
         return jsonify({'error': 'Ubicación duplicada'}), 409
     except Exception as e:
+        conn.close()
         return jsonify({'error': str(e)}), 500
 
 @app.route('/usuarios/<int:user_id>', methods=['DELETE'])
@@ -268,6 +310,7 @@ def delete_user(user_id):
 
         return jsonify({'message': 'User deleted'}), 200
     except Exception as e:
+        conn.close()
         return jsonify({'error': str(e)}), 500
 
 @app.route('/almacenes/<int:almacen_id>', methods=['DELETE'])
@@ -282,6 +325,7 @@ def eliminar_almacen(almacen_id):
         return jsonify({'message': 'Almacén eliminado correctamente'}), 200
 
     except Exception as e:
+        conn.close()
         return jsonify({'error': str(e)}), 500
 
 if __name__ == "__main__":
