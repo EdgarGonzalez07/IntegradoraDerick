@@ -74,15 +74,16 @@ def register():
 @app.route('/almacenes', methods=['POST'])
 def register_almacen():
     data = request.get_json()
-    name = data.get('name')
-    location = data.get('location')
-    capacity = data.get('capacity')
-    imgUrl = data.get('imgUrl')
-
-    if not name or not location or capacity is None or not imgUrl:
-        return jsonify({'error': 'Faltan campos requeridos'}), 400
-
+    print("DATA RECIBIDA:", data)
     try:
+        name = data.get('name')
+        location = data.get('location')
+        capacity = int(data.get('capacity'))
+        imgUrl = data.get('imgUrl')
+
+        if not name or not location or capacity is None or not imgUrl:
+            return jsonify({'error': 'Faltan campos requeridos'}), 400
+
         conn = sqlite3.connect(DataBase_NAME)
         c = conn.cursor()
         c.execute("""
@@ -100,10 +101,12 @@ def register_almacen():
             'capacity': capacity,
             'imgUrl': imgUrl
         }), 201
-
+    except ValueError:
+        return jsonify({'error': 'Capacidad debe ser un número'}), 400
     except sqlite3.IntegrityError:
         return jsonify({'error': 'La ubicación ya existe'}), 409
     except Exception as e:
+        print("ERROR:", e)
         return jsonify({'error': str(e)}), 500
 
 

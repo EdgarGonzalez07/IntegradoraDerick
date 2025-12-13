@@ -99,16 +99,21 @@ fun NewProductScreen(
             modifier = Modifier.size(180.dp, 50.dp),
             onClick = {
                 if (name.isNotEmpty() && location.isNotEmpty() && capacity.isNotEmpty()) {
-                    viewModel.create(
-                        AlmacenRequest(
-                            name = name,
-                            location = location,
-                            capacity = capacity.toInt(),
-                            imgUrl = "https://via.placeholder.com/150"
-                        )
+                    val almacen = AlmacenRequest(
+                        name = name,
+                        location = location,
+                        capacity = capacity.toInt(),
+                        imgUrl = "https://via.placeholder.com/300"
                     )
-                    viewModel.loadAlmacenes()
-                    navController.popBackStack()
+                    viewModel.create(almacen) { success ->
+                        if(success){
+                            viewModel.loadAlmacenes()
+                            navController.popBackStack()
+                        } else {
+                            errorMessage = "Error al agregar el producto"
+                            showError = true
+                        }
+                    }
                 } else {
                     errorMessage = "LLENA TODOS LOS CAMPOS"
                     showError = true

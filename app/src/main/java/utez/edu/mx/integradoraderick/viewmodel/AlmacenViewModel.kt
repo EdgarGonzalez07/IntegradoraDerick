@@ -1,5 +1,6 @@
 package utez.edu.mx.integradoraderick.viewmodel
 
+import android.content.Context
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -19,7 +20,8 @@ enum class GyroAction {
 }
 
 class AlmacenViewModel(
-    private val repository: AlmacenRepository = AlmacenRepository()
+    private val repository: AlmacenRepository = AlmacenRepository(),
+    val context: Context
 ) : ViewModel() {
 
     val almacenes = mutableStateOf<List<AlmacenResponse>>(emptyList())
@@ -41,15 +43,19 @@ class AlmacenViewModel(
         }
     }
 
-    fun create(almacen: AlmacenRequest) {
+    fun create(almacen: AlmacenRequest, onResult: (Boolean) -> Unit ) {
         viewModelScope.launch {
             try {
                 val response = repository.create(almacen)
                 if (response.isSuccessful) {
                     loadAlmacenes()
+                    onResult(true)
+                }else{
+                    onResult(false)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
+                onResult(false)
             }
         }
     }
