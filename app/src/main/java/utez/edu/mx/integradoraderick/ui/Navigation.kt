@@ -9,6 +9,8 @@ import utez.edu.mx.integradoraderick.data.repository.AlmacenRepository
 import utez.edu.mx.integradoraderick.ui.screens.LoginScreen
 import utez.edu.mx.integradoraderick.ui.screens.NewProductScreen
 import utez.edu.mx.integradoraderick.ui.screens.RegistroScreen
+import utez.edu.mx.integradoraderick.ui.screens.UpdateProductScreen
+import utez.edu.mx.integradoraderick.ui.screens.ViewProductScreen
 import utez.edu.mx.integradoraderick.ui.utils.ControladorSesiones
 import utez.edu.mx.integradoraderick.ui.utils.Routes
 import utez.edu.mx.integradoraderick.viewmodel.AlmacenViewModel
@@ -41,6 +43,9 @@ fun Navigation() {
         composable(Routes.Register.route) { RegistroScreen(regviewModel, navController) }
         composable(Routes.Main.route) { MainScreen(viewModel = almacenViewModel, navController = navController) }
         composable(Routes.NewProduct.route) { NewProductScreen(navController = navController, viewModel = almacenViewModel) }
+        composable(Routes.UpdateProduct.route){ UpdateProductScreen(navController = navController, viewModel = almacenViewModel) }
+        composable(Routes.ViewProduct.route){ ViewProductScreen(navController = navController, viewModel = almacenViewModel) }
+
     }
 }
 
