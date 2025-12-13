@@ -54,7 +54,8 @@ fun MainScreen(viewModel: AlmacenViewModel, navController: NavController) {
         items(almacenes){ almacen ->
             AlmacenAdminCard(
                 almacen = almacen,
-                onShow = { viewModel.select(it) }
+                onShow = { viewModel.select(it)
+                    navController.navigate(Routes.Details.route) }
             )
         }
     }

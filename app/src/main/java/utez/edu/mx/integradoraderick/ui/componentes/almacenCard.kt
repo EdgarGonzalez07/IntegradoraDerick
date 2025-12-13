@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import androidx.compose.ui.text.font.FontWeight
 import utez.edu.mx.integradoraderick.data.model.almacenes.AlmacenResponse
+import utez.edu.mx.integradoraderick.ui.componentes.botones.BotonPeru
 
 @Composable
 fun AlmacenAdminCard(
@@ -66,12 +67,7 @@ fun AlmacenAdminCard(
             Divider(color = Color.Gray.copy(alpha = 0.4f))
             Spacer(modifier = Modifier.height(5.dp))
 
-            Button(
-                onClick = { onShow(almacen) }, // ✅ YA COINCIDEN LOS TIPOS
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1976D2))
-            ) {
-                Text("Mostrar más detalles", color = Color.White)
-            }
+            BotonPeru("Ver Detalles", { onShow(almacen) })
         }
     }
 }

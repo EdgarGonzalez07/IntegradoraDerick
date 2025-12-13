@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import utez.edu.mx.integradoraderick.data.model.usuarios.UsuarioRepository
 import utez.edu.mx.integradoraderick.data.repository.AlmacenRepository
+import utez.edu.mx.integradoraderick.ui.screens.AlmacenDetailScreen
 import utez.edu.mx.integradoraderick.ui.screens.LoginScreen
 import utez.edu.mx.integradoraderick.ui.screens.NewProductScreen
 import utez.edu.mx.integradoraderick.ui.screens.RegistroScreen
@@ -41,6 +42,10 @@ fun Navigation() {
         composable(Routes.Register.route) { RegistroScreen(regviewModel, navController) }
         composable(Routes.Main.route) { MainScreen(viewModel = almacenViewModel, navController = navController) }
         composable(Routes.NewProduct.route) { NewProductScreen(navController = navController, viewModel = almacenViewModel) }
+        composable(Routes.Details.route) {
+            AlmacenDetailScreen(navController, almacenViewModel)
+        }
+
     }
 }
 
