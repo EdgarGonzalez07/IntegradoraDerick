@@ -33,15 +33,15 @@ Demostrar la implementación de una arquitectura robusta en Android utilizando s
 
 Este proyecto ha sido desarrollado siguiendo estrictamente los lineamientos de la materia:
 
-- **Lenguaje:** Kotlin 100%
+- **Lenguaje:** Kotlin 90% Python 10%
 - **Interfaz de Usuario:** Jetpack Compose
 - **Arquitectura:** MVVM (Model–View–ViewModel)
 - **Conectividad (API REST):** Retrofit  
-  - **GET:** [Qué datos se obtienen]  
-  - **POST:** [Qué datos se envían o crean]  
-  - **UPDATE:** [Qué información se actualiza]  
-  - **DELETE:** [Qué información se elimina]  
-- **Sensor Integrado:** [Acelerómetro]  
+  - **GET:** Se obtienen los usuarios que se han registrado en la app.  
+  - **POST:** Se envian los datos de los usuarios: 'username', 'email' y 'password'.
+  - **UPDATE:** Se actualizan los datos del usuarios: 'username', 'email' y 'password'.  
+  - **DELETE:** Se eliminan los datos del usuario: 'username', 'email' y 'password'.  
+- **Sensores Integrado:** Acelerómetro y Giroscopio  
   - **Uso:** [El sensor del dispositivo se utiliza para activar acciones específicas dentro de la aplicación, como la confirmación de operaciones de venta, la ejecución de comandos rápidos o la navegación entre funciones del sistema, permitiendo una interacción más ágil y reduciendo la necesidad de intervención manual.]
 
 ---
