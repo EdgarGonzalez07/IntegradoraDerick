@@ -13,17 +13,9 @@ class GyroscopeHandler(
     private val viewModel: AlmacenViewModel
 ) : SensorEventListener {
 
-    private val threshold = 2.0f
-    private val cooldown = 1200L
-    private var lastActionTime = 0L
-
     fun register() {
-        gyroscope?.also {
-            sensorManager.registerListener(
-                this,
-                it,
-                SensorManager.SENSOR_DELAY_NORMAL
-            )
+        gyroscope?.let {
+            sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL)
         }
     }
 
@@ -33,25 +25,12 @@ class GyroscopeHandler(
 
     override fun onSensorChanged(event: SensorEvent?) {
         event ?: return
+        val x = event.values[0]
+        val y = event.values[1]
 
-        val now = System.currentTimeMillis()
-        if (now - lastActionTime < cooldown) return
-        lastActionTime = now
-
-        val x = event.values[0] // Arriba / Abajo
-        val y = event.values[1] // Izquierda / Derecha
-
-        when {
-            y > threshold -> {
-                viewModel.emitAction(GyroAction.CREATE)
-            }
-            y < -threshold -> {
-                viewModel.emitAction(GyroAction.DELETE)
-            }
-            x > threshold || x < -threshold -> {
-                viewModel.emitAction(GyroAction.READ)
-            }
-        }
+        if (x > 2) viewModel.emitAction(GyroAction.CREATE)
+        else if (x < -2) viewModel.emitAction(GyroAction.READ)
+        else if (y > 2) viewModel.emitAction(GyroAction.DELETE)
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}

@@ -31,7 +31,7 @@ class RegisterUserViewModel(
                     excepcion != null -> Asistente.mensajeError(excepcion)
                     else -> "Error al registrarse: $msj"
                 }
-                onResult(true,usermessage)
+                onResult(false,usermessage)
             }
         }
     }
