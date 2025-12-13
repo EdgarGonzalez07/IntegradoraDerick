@@ -109,7 +109,7 @@ fun LoginScreen(
                 } else {
                     viewModel.logear(email, password) { success, message ->
                         if(success){
-                            navController.navigate("home") {
+                            navController.navigate("Main") {
                                 popUpTo("login") { inclusive = true}
                             }
                         } else {

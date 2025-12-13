@@ -29,6 +29,13 @@ def init_db():
                   username TEXT NOT NULL,
                   email TEXT NOT NULL UNIQUE,
                   password TEXT NOT NULL)''')
+
+    c.execute('''CREATE TABLE IF NOT EXISTS almacenes
+                 (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                  name TEXT NOT NULL,
+                  location TEXT NOT NULL UNIQUE,
+                  capacity INTEGER,
+                  imgUrl TEXT NOT NULL)''')
     conn.commit()
     conn.close()
     print(">>> BD lista!")
@@ -64,6 +71,42 @@ def register():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/almacenes', methods=['POST'])
+def register_almacen():
+    data = request.get_json()
+    name = data.get('name')
+    location = data.get('location')
+    capacity = data.get('capacity')
+    imgUrl = data.get('imgUrl')
+
+    if not name or not location or capacity is None or not imgUrl:
+        return jsonify({'error': 'Faltan campos requeridos'}), 400
+
+    try:
+        conn = sqlite3.connect(DataBase_NAME)
+        c = conn.cursor()
+        c.execute("""
+            INSERT INTO almacenes (name, location, capacity, imgUrl)
+            VALUES (?, ?, ?, ?)
+        """,(name, location, capacity, imgUrl))
+        conn.commit()
+        almacen_id = c.lastrowid
+        conn.close()
+
+        return jsonify({
+            'id': almacen_id,
+            'name': name,
+            'location': location,
+            'capacity': capacity,
+            'imgUrl': imgUrl
+        }), 201
+
+    except sqlite3.IntegrityError:
+        return jsonify({'error': 'La ubicación ya existe'}), 409
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
 @app.route('/usuarios', methods=['GET'])
 def get_all_users():
     try:
@@ -84,6 +127,30 @@ def get_all_users():
 
         conn.close()
         return jsonify(lista_usuarios), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/almacenes', methods=['GET'])
+def obtener_almacenes():
+    try:
+        conn = sqlite3.connect(DataBase_NAME)
+        conn.row_factory = sqlite3.Row
+        c = conn.cursor()
+        c.execute("SELECT * FROM almacenes")
+        rows = c.fetchall()
+
+        almacenes = []
+        for row in rows:
+            almacenes.append({
+                "id": row["id"],
+                "name": row["name"],
+                "location": row["location"],
+                "capacity": row["capacity"],
+                "imgUrl": row["imgUrl"]
+            })
+        conn.close()
+        return jsonify(almacenes), 200
+
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -108,6 +175,26 @@ def login():
         return jsonify({'id': user[0], 'username': user[1], 'email': user[2]}), 200
     else:
         return jsonify({'error': 'credenciales invalidas'}), 401
+
+@app.route('/almacenes/<int:almacen_id>', methods=['GET'])
+def obtener_almacen(almacen_id):
+    conn = sqlite3.connect(DataBase_NAME)
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
+    c.execute("SELECT * FROM almacenes WHERE id = ?", (almacen_id,))
+    row = c.fetchone()
+    conn.close()
+
+    if row:
+        return jsonify({
+            "id": row["id"],
+            "name": row["name"],
+            "location": row["location"],
+            "capacity": row["capacity"],
+            "imgUrl": row["imgUrl"]
+        }), 200
+    else:
+        return jsonify({'error': 'Almacén no encontrado'}), 404
 
 @app.route('/usuarios/<int:user_id>', methods=['PUT'])
 def update_user(user_id):
@@ -134,6 +221,31 @@ def update_user(user_id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/almacenes/<int:almacen_id>', methods=['PUT'])
+def actualizar_almacen(almacen_id):
+    data = request.get_json()
+    name = data.get('name')
+    location = data.get('location')
+    capacity = data.get('capacity')
+    imgUrl = data.get('imgUrl')
+
+    try:
+        conn = sqlite3.connect(DataBase_NAME)
+        c = conn.cursor()
+        c.execute("""
+            UPDATE almacenes
+            SET name = ?, location = ?, capacity = ?, imgUrl = ?
+            WHERE id = ?
+        """, (name, location, capacity, imgUrl, almacen_id))
+        conn.commit()
+        conn.close()
+
+        return jsonify({'message': 'Almacén actualizado correctamente'}), 200
+    except sqlite3.IntegrityError:
+        return jsonify({'error': 'Ubicación duplicada'}), 409
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/usuarios/<int:user_id>', methods=['DELETE'])
 def delete_user(user_id):
     try:
@@ -155,7 +267,20 @@ def delete_user(user_id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/almacenes/<int:almacen_id>', methods=['DELETE'])
+def eliminar_almacen(almacen_id):
+    try:
+        conn = sqlite3.connect(DataBase_NAME)
+        c = conn.cursor()
+        c.execute("DELETE FROM almacenes WHERE id = ?", (almacen_id,))
+        conn.commit()
+        conn.close()
+
+        return jsonify({'message': 'Almacén eliminado correctamente'}), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == "__main__":
     init_db()   # <--- AQUÍ SE CREA LA BD Y LA TABLA
-    app.run(host="0.0.0.0", port=5000, debug=True)  # <--- AQUI SE DA ACCESO A CUALQUIER IP QUE QUIERA ENTRAR
+    app.run(host="0.0.0.0", port=5000, debug=True)

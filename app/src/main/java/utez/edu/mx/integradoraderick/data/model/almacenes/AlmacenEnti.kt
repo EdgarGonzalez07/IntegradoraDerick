@@ -7,8 +7,8 @@ import androidx.room.PrimaryKey
 data class Almacen(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val nombre: String,
-    val ubicacion: String,
-    val capacidad: Int,
+    val name: String,
+    val ubication: String,
+    val capacity: Int,
     val imgUrl:String
 )
