@@ -37,23 +37,20 @@ Este proyecto ha sido desarrollado siguiendo estrictamente los lineamientos de l
 - **Interfaz de Usuario:** Jetpack Compose
 - **Arquitectura:** MVVM (Model–View–ViewModel)
 - **Conectividad (API REST):** Retrofit  
-  - **GET:** Se obtienen los usuarios que se han registrado en la app.  
-  - **POST:** Se envian los datos de los usuarios: 'username', 'email' y 'password'.
-  - **UPDATE:** Se actualizan los datos del usuarios: 'username', 'email' y 'password'.  
-  - **DELETE:** Se eliminan los datos del usuario: 'username', 'email' y 'password'.  
+  - **GET:** Se obtienen los usuarios y los almacenes que se han registrado en la app.
+  - **POST:** Se envian los datos de los usuarios: 'username', 'email' y 'password'; asi como tambien los de los almacenes.
+  - **UPDATE:** Se actualizan los datos del usuarios: 'username', 'email' y 'password'; asi como tambien los de los almacenes.
+  - **DELETE:** Se eliminan los datos del usuario: 'username', 'email' y 'password'; asi como tambien los de los almacenes.
 - **Sensores Integrado:** Acelerómetro y Giroscopio  
-  - **Uso:** [El sensor del dispositivo se utiliza para activar acciones específicas dentro de la aplicación, como la confirmación de operaciones de venta, la ejecución de comandos rápidos o la navegación entre funciones del sistema, permitiendo una interacción más ágil y reduciendo la necesidad de intervención manual.]
+  - **Uso:** El sensor del dispositivo se utiliza para activar acciones específicas dentro de la aplicación, como la confirmación de operaciones de venta, la ejecución de comandos rápidos o la navegación entre funciones del sistema, permitiendo una interacción más ágil y reduciendo la necesidad de intervención manual.
 
 ---
 
 ## 🖼️ Capturas de Pantalla
 
-> Agrega al menos 3 capturas.  
-> Las imágenes deben estar dentro del repositorio o usar URLs válidas.
-
 | Pantalla de Inicio | Operación CRUD | Uso del Sensor |
 | :---: | :---: | :---: |
-| ![Inicio](url_imagen) | ![CRUD](url_imagen) | ![Sensor](url_imagen) |
+| <img width="361" height="787" alt="Inicio" src="https://github.com/user-attachments/assets/d3a51f0a-8e53-43ac-9b35-063f8eb2db4e" /> | ![CRUD](url_imagen) | ![Sensor](url_imagen) |
 
 ---
 
