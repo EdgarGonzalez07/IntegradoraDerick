@@ -143,14 +143,14 @@ fun NewProductScreen(
 
                 val imagePart = uriToMultipart(context, image!!)
 
-                viewModel.uploadImage(imagePart) { imageUrl ->
-                    if (imageUrl == null) return@uploadImage
+                viewModel.uploadImage(imagePart) { image ->
+                    if (image == null) return@uploadImage
 
                     val almacen = AlmacenRequest(
                         name = name,
                         location = location,
                         capacity = capacity.toInt(),
-                        image = imageUrl
+                        image = image
                     )
 
                     viewModel.create(almacen) { success ->

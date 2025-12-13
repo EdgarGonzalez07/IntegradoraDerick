@@ -7,3 +7,4 @@ sealed class Routes(val route: String){
     object NewProduct: Routes("new_product")
     object Details: Routes("details")
 }
+//para comitear

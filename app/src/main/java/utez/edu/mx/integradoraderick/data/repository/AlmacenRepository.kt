@@ -17,4 +17,8 @@ class AlmacenRepository {
 
     suspend fun uploadImage(image: MultipartBody.Part) =
         api.uploadImage(image)
+
+    suspend fun update(id: Int, almacen: AlmacenRequest) =
+        api.actualizarAlmacen(id, almacen)
+
 }

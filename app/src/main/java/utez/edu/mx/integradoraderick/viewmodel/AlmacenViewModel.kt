@@ -103,4 +103,31 @@ class AlmacenViewModel(
             }
         }
     }
+
+    fun updateAlmacen(updated: AlmacenResponse, onResult: (Boolean) -> Unit) {
+        viewModelScope.launch {
+            try {
+                val request = AlmacenRequest(
+                    name = updated.name,
+                    location = updated.location,
+                    capacity = updated.capacity,
+                    image = updated.image
+                )
+                val response = repository.update(updated.id, request)
+                if (response.isSuccessful) {
+                    // Actualizar la lista local
+                    loadAlmacenes()
+                    // Actualizar el almacén seleccionado si se está viendo
+                    selected.value = updated
+                    onResult(true)
+                } else {
+                    onResult(false)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                onResult(false)
+            }
+        }
+    }
+
 }
