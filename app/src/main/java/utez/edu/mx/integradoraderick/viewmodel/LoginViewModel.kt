@@ -23,11 +23,11 @@ class LoginViewModel(
                 return@launch
             }
 
-            val result =repo.loguear(Usuario(nombre = "", correo = email, contrasenia = password))
+            val result =repo.loguear(Usuario(username = "", email = email, password = password))
             if(result.isSuccess){
                 val user = result.getOrNull()
                 if (user != null) {
-                    controlador.guardarUsuario(user.id, user.nombre, user.correo)
+                    controlador.guardarUsuario(user.id, user.username, user.email)
                     onResult(true, null)
                 } else {
                     onResult(false, "Datos corruptos o dañados.")

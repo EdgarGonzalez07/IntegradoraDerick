@@ -9,8 +9,10 @@ class UsuarioRepository {
 
     private val api = RetrofitCliente.api
 
-    suspend fun registrar(usuario: Usuario): Result<Usuario> = Asistente.safeApiCall {
-        api.registrarUsuario(usuario)
+    suspend fun registrar(usuario: Usuario): Result<Usuario> {
+        return Asistente.safeApiCall {
+            api.registrarUsuario(usuario)
+        }
     }
 
     suspend fun loguear(usuario: Usuario): Result<Usuario> = Asistente.safeApiCall {

@@ -14,12 +14,12 @@ class RegisterUserViewModel(
 ): ViewModel() {
     fun registrar(username: String, email: String, password: String, onResult: (Boolean, String?) -> Unit){
         viewModelScope.launch {
-            if(Asistente.ServidorDisponible(context)){
+            if(!Asistente.ServidorDisponible(context)){
                 onResult(false, "No hay conexion a internet. Verifica tu conexion.")
                 return@launch
             }
 
-            val result = repo.registrar(Usuario(nombre =username, correo =email, contrasenia = password))
+            val result = repo.registrar(Usuario(username = username, email = email, password = password))
             if(result.isSuccess){
                 onResult(true, null)
             } else {

@@ -1,5 +1,6 @@
 package utez.edu.mx.integradoraderick.ui.screens
 
+import android.util.Log
 import android.util.Log.v
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -28,9 +29,12 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import kotlinx.coroutines.launch
 import utez.edu.mx.integradoraderick.R
+import utez.edu.mx.integradoraderick.data.remote.RetrofitCliente
 import utez.edu.mx.integradoraderick.ui.componentes.botones.BotonPeru
 import utez.edu.mx.integradoraderick.ui.componentes.botones.BotonPeruanisimo
 import utez.edu.mx.integradoraderick.ui.componentes.dialogos.AlertPeru
@@ -99,7 +103,7 @@ fun LoginScreen(
         BotonPeru(
             "Iniciar Sesion",
             {
-                if(email.isNotEmpty() && password.isNotEmpty()){
+                if(email.isEmpty() || password.isEmpty()){
                     errormsg = "Llena todos los campos porfavor."
                     showDialog = true
                 } else {

@@ -43,6 +43,9 @@ fun Navigation() {
         composable("Login") { LoginScreen(logviewModel, navController) }
         composable("Register") { RegistroScreen(regviewModel, navController) }
         composable("NewProduct"){ NewProductScreen() }
+        /*composable("FullView"){ FullView() }
+        composable("Main"){ MainScreen() }*/
+
 
     }
 }
