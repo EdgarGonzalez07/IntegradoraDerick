@@ -1,3 +1,4 @@
+import android.R.attr.password
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -37,10 +38,12 @@ fun NewProductScreen(
     viewModel: AlmacenViewModel
 ) {
 
-    var nombre by remember { mutableStateOf("") }
-    var ubicacion by remember { mutableStateOf("") }
-    var capacidad by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf("") }
+    var location by remember { mutableStateOf("") }
+    var capacity by remember { mutableStateOf("") }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
+    var errorMessage by remember { mutableStateOf("") }
+    var showError by remember { mutableStateOf(false) }
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -83,11 +86,11 @@ fun NewProductScreen(
 
         Spacer(modifier = Modifier.height(15.dp))
 
-        CampoDeTextoPeru(nombre, { nombre = it }, "Nombre", KeyboardType.Text)
+        CampoDeTextoPeru(name, { name = it }, "Nombre", KeyboardType.Text)
         Spacer(modifier = Modifier.height(10.dp))
-        CampoDeTextoPeru(ubicacion, { ubicacion = it }, "Ubicación", KeyboardType.Text)
+        CampoDeTextoPeru(location, { location = it }, "Ubicación", KeyboardType.Text)
         Spacer(modifier = Modifier.height(10.dp))
-        CampoDeTextoPeru(capacidad, { capacidad = it }, "Capacidad", KeyboardType.Number)
+        CampoDeTextoPeru(capacity, { capacity = it }, "Capacidad", KeyboardType.Number)
 
         Spacer(modifier = Modifier.height(20.dp))
 
@@ -95,22 +98,20 @@ fun NewProductScreen(
             text = "Agregar producto",
             modifier = Modifier.size(180.dp, 50.dp),
             onClick = {
-                val capacidadInt = capacidad.toIntOrNull()
-
-                if (nombre.isNotBlank() && ubicacion.isNotBlank() && capacidadInt != null) {
-
+                if (name.isNotEmpty() && location.isNotEmpty() && capacity.isNotEmpty()) {
                     viewModel.create(
                         AlmacenRequest(
-                            name = nombre,
-                            location = ubicacion,
-                            capacity = capacidadInt,
+                            name = name,
+                            location = location,
+                            capacity = capacity.toInt(),
                             imgUrl = "https://via.placeholder.com/150"
                         )
                     )
-
                     viewModel.loadAlmacenes()
-
                     navController.popBackStack()
+                } else {
+                    errorMessage = "LLENA TODOS LOS CAMPOS"
+                    showError = true
                 }
             }
         )

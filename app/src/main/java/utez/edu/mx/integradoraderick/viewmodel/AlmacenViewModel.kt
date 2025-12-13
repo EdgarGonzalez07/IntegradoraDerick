@@ -1,5 +1,6 @@
 package utez.edu.mx.integradoraderick.viewmodel
 
+import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import androidx.compose.runtime.mutableStateOf
@@ -22,7 +23,8 @@ enum class GyroAction {
 }
 
 class AlmacenViewModel(
-    private val repository: AlmacenRepository = AlmacenRepository()
+    private val repository: AlmacenRepository = AlmacenRepository(),
+    private val context: Context
 ) : ViewModel() {
 
     val almacenes = mutableStateOf<List<AlmacenResponse>>(emptyList())
