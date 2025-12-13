@@ -110,7 +110,7 @@ fun LoginScreen(
                     viewModel.logear(email, password) { success, message ->
                         if(success){
                             navController.navigate("Main") {
-                                popUpTo("login") { inclusive = true}
+                                popUpTo("Login") { inclusive = true}
                             }
                         } else {
                             errormsg = message ?:"Datos no coincidentes"

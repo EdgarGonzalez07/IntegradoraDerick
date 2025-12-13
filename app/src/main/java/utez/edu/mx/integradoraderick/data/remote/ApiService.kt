@@ -28,14 +28,14 @@ interface ApiService {
     @POST("/almacenes")
     suspend fun crearAlmacen(
         @Body almacen: AlmacenRequest
-    ): Response<Almacen>
+    ): Response<AlmacenResponse>
 
     @GET("/almacenes")
     suspend fun getAlmacenes(): Response<List<AlmacenResponse>>
 
 
     @PUT("/almacenes/{id}")
-    suspend fun actualizarAlmacen(@Path("id") id: Int, @Body almacen: AlmacenRequest): Response<AlmacenRequest>
+    suspend fun actualizarAlmacen(@Path("id") id: Int, @Body almacen: AlmacenRequest): Response<AlmacenResponse>
 
     @DELETE("/almacenes/{id}")
     suspend fun borrarAlmacen(@Path("id") id: Int): Response<Void>
