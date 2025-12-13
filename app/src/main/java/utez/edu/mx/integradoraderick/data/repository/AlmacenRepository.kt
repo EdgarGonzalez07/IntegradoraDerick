@@ -7,15 +7,12 @@ class AlmacenRepository {
 
     private val api = RetrofitCliente.api
 
-    suspend fun create(almacen: AlmacenRequest): Response<AlmacenRequest> =
+    suspend fun create(almacen: AlmacenRequest) =
         api.crearAlmacen(almacen)
 
-    suspend fun getAll(): Response<List<AlmacenRequest>> =
+    suspend fun getAll() =
         api.getAlmacenes()
 
-    suspend fun update(id: Int, almacen: AlmacenRequest): Response<AlmacenRequest> =
-        api.actualizarAlmacen(id, almacen)
-
-    suspend fun delete(id: Int): Response<Void> =
+    suspend fun delete(id: Int) =
         api.borrarAlmacen(id)
 }

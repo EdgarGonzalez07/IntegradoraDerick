@@ -8,6 +8,7 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 import utez.edu.mx.integradoraderick.data.model.almacenes.Almacen
+import utez.edu.mx.integradoraderick.data.model.almacenes.AlmacenResponse
 import utez.edu.mx.integradoraderick.data.model.usuarios.Usuario
 
 interface ApiService {
@@ -25,10 +26,13 @@ interface ApiService {
     suspend fun borrarUsuario(@Path("id") id:Int): Response<Void>
 
     @POST("/almacenes")
-    suspend fun crearAlmacen(@Body almacen: AlmacenRequest): Response<AlmacenRequest>
+    suspend fun crearAlmacen(
+        @Body almacen: AlmacenRequest
+    ): Response<Almacen>
 
     @GET("/almacenes")
-    suspend fun getAlmacenes(): Response<List<AlmacenRequest>>
+    suspend fun getAlmacenes(): Response<List<AlmacenResponse>>
+
 
     @PUT("/almacenes/{id}")
     suspend fun actualizarAlmacen(@Path("id") id: Int, @Body almacen: AlmacenRequest): Response<AlmacenRequest>

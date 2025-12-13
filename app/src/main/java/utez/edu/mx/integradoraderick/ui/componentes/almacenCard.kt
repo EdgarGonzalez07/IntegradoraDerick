@@ -1,5 +1,6 @@
 package utez.edu.mx.integradoraderick.ui.componentes
 
+import utez.edu.mx.integradoraderick.R
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,14 +14,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import utez.edu.mx.integradoraderick.data.remote.AlmacenRequest
-import java.io.File
 import androidx.compose.ui.text.font.FontWeight
+import utez.edu.mx.integradoraderick.data.model.almacenes.AlmacenResponse
 
 @Composable
 fun AlmacenAdminCard(
-    almacen: AlmacenRequest,
-    onShow: (AlmacenRequest) -> Unit,
+    almacen: AlmacenResponse,
+    onShow: (AlmacenResponse) -> Unit, // ✅ CAMBIO AQUÍ
     modifier: Modifier = Modifier
 ) {
     val cardColor = Color(0xFFF5F8F0)
@@ -34,13 +34,14 @@ fun AlmacenAdminCard(
         shape = RoundedCornerShape(8.dp)
     ) {
         Column(modifier = modifier.padding(8.dp)) {
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.Top
             ) {
                 AsyncImage(
-                    model = File(almacen.imgUrl),
-                    contentDescription = "Imagen del almacen",
+                    model = almacen.imgUrl.ifBlank { R.drawable.agregar },
+                    contentDescription = "Imagen del almacén",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .size(100.dp)
@@ -51,9 +52,9 @@ fun AlmacenAdminCard(
                 Spacer(modifier = Modifier.width(10.dp))
 
                 Column(modifier = Modifier.weight(1f)) {
-                    DataField("Nombre:", almacen.nombre.uppercase())
-                    DataField("Ubicación:", almacen.ubicacion)
-                    DataField("Capacidad:", almacen.capacidad.toString())
+                    DataField("Nombre:", almacen.name.uppercase())
+                    DataField("Ubicación:", almacen.location)
+                    DataField("Capacidad:", almacen.capacity.toString())
                 }
             }
 
@@ -61,13 +62,11 @@ fun AlmacenAdminCard(
             Divider(color = Color.Gray.copy(alpha = 0.4f))
             Spacer(modifier = Modifier.height(5.dp))
 
-            Row {
-                Button(
-                    onClick = { onShow(almacen) },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1976D2))
-                ) {
-                    Text("Mostrar más detalles", color = Color.White)
-                }
+            Button(
+                onClick = { onShow(almacen) }, // ✅ YA COINCIDEN LOS TIPOS
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1976D2))
+            ) {
+                Text("Mostrar más detalles", color = Color.White)
             }
         }
     }

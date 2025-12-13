@@ -4,8 +4,8 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import utez.edu.mx.integradoraderick.data.remote.AlmacenRequest
 import utez.edu.mx.integradoraderick.viewmodel.AlmacenViewModel
+import utez.edu.mx.integradoraderick.viewmodel.GyroAction
 
 class GyroscopeHandler(
     private val sensorManager: SensorManager,
@@ -14,10 +14,16 @@ class GyroscopeHandler(
 ) : SensorEventListener {
 
     private val threshold = 2.0f
+    private val cooldown = 1200L
+    private var lastActionTime = 0L
 
     fun register() {
-        gyroscope?.also { sensor ->
-            sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL)
+        gyroscope?.also {
+            sensorManager.registerListener(
+                this,
+                it,
+                SensorManager.SENSOR_DELAY_NORMAL
+            )
         }
     }
 
@@ -28,34 +34,22 @@ class GyroscopeHandler(
     override fun onSensorChanged(event: SensorEvent?) {
         event ?: return
 
-        val x = event.values[0] // Eje X
-        val y = event.values[1] // Eje Y
+        val now = System.currentTimeMillis()
+        if (now - lastActionTime < cooldown) return
+        lastActionTime = now
 
-        // Movimientos
-        if (x > threshold) {
-            // ARRIBA → Update
-            viewModel.selected.value?.let { selected ->
-                viewModel.update(selected.id ?: 0, selected)
+        val x = event.values[0] // Arriba / Abajo
+        val y = event.values[1] // Izquierda / Derecha
+
+        when {
+            y > threshold -> {
+                viewModel.emitAction(GyroAction.CREATE)
             }
-        } else if (x < -threshold) {
-            // ABAJO → Reload
-            viewModel.loadAlmacenes()
-        }
-
-        if (y > threshold) {
-            // DERECHA → Create
-            viewModel.create(
-                viewModel.selected.value?.copy(id = null) ?: AlmacenRequest(
-                    nombre = "Nuevo",
-                    ubicacion = "Ubicación",
-                    capacidad = 0,
-                    imgUrl = ""
-                )
-            )
-        } else if (y < -threshold) {
-            // IZQUIERDA → Delete
-            viewModel.selected.value?.let { selected ->
-                viewModel.delete(selected.id ?: 0)
+            y < -threshold -> {
+                viewModel.emitAction(GyroAction.DELETE)
+            }
+            x > threshold || x < -threshold -> {
+                viewModel.emitAction(GyroAction.READ)
             }
         }
     }

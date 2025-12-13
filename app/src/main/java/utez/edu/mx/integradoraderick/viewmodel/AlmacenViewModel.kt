@@ -5,31 +5,40 @@ import android.hardware.SensorManager
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import utez.edu.mx.integradoraderick.data.model.almacenes.Almacen
+import utez.edu.mx.integradoraderick.data.model.almacenes.AlmacenResponse
 import utez.edu.mx.integradoraderick.data.remote.AlmacenRequest
-import utez.edu.mx.integradoraderick.data.remote.RetrofitCliente
+import utez.edu.mx.integradoraderick.data.repository.AlmacenRepository
 import utez.edu.mx.integradoraderick.sensor.GyroscopeHandler
 
-class AlmacenViewModel : ViewModel() {
+enum class GyroAction {
+    NONE,
+    CREATE,
+    READ,
+    DELETE
+}
 
-    val almacenes = mutableStateOf<List<AlmacenRequest>>(emptyList())
-    val selected = mutableStateOf<AlmacenRequest?>(null)
+class AlmacenViewModel(
+    private val repository: AlmacenRepository = AlmacenRepository()
+) : ViewModel() {
 
-    private var gyroHandler: GyroscopeHandler? = null
+    val almacenes = mutableStateOf<List<AlmacenResponse>>(emptyList())
+    val selected = mutableStateOf<AlmacenResponse?>(null)
 
-    // Inicializa el sensor desde cualquier Composable
-    fun initGyroscope(sensorManager: SensorManager, gyroscope: Sensor?) {
-        gyroHandler = GyroscopeHandler(sensorManager, gyroscope, this)
-    }
+    private val _gyroAction = MutableStateFlow(GyroAction.NONE)
+    val gyroAction = _gyroAction.asStateFlow()
 
-    fun registerGyro() = gyroHandler?.register()
-    fun unregisterGyro() = gyroHandler?.unregister()
-
-    // CRUD
     fun loadAlmacenes() {
         viewModelScope.launch {
             try {
-                val response = RetrofitCliente.api.getAlmacenes()
+                val response = repository.getAll()
+                println("======== ALMACENES ========")
+                println("CODE: ${response.code()}")
+                println("BODY: ${response.body()}")
+                println("===========================")
                 if (response.isSuccessful) {
                     almacenes.value = response.body() ?: emptyList()
                 }
@@ -39,27 +48,10 @@ class AlmacenViewModel : ViewModel() {
         }
     }
 
-    fun select(almacen: AlmacenRequest) {
-        selected.value = almacen
-    }
-
     fun create(almacen: AlmacenRequest) {
         viewModelScope.launch {
             try {
-                val response = RetrofitCliente.api.crearAlmacen(almacen)
-                if (response.isSuccessful) {
-                    loadAlmacenes()
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
-
-    fun update(id: Int, almacen: AlmacenRequest) {
-        viewModelScope.launch {
-            try {
-                val response = RetrofitCliente.api.actualizarAlmacen(id, almacen)
+                val response = repository.create(almacen)
                 if (response.isSuccessful) {
                     loadAlmacenes()
                 }
@@ -72,14 +64,25 @@ class AlmacenViewModel : ViewModel() {
     fun delete(id: Int) {
         viewModelScope.launch {
             try {
-                val response = RetrofitCliente.api.borrarAlmacen(id)
-                if (response.isSuccessful) {
-                    loadAlmacenes()
-                }
+                repository.delete(id)
+                loadAlmacenes()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
+
+    fun select(almacen: AlmacenResponse) {
+        selected.value = almacen
+    }
+
+    fun emitAction(action: GyroAction) {
+        _gyroAction.value = action
+    }
+
+    fun clearAction() {
+        _gyroAction.value = GyroAction.NONE
+    }
 }
+
 
