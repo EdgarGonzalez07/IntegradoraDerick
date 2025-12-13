@@ -1,16 +1,11 @@
 package utez.edu.mx.integradoraderick.ui.screens
 
-import android.util.Log.e
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -28,6 +23,7 @@ import utez.edu.mx.integradoraderick.R
 import utez.edu.mx.integradoraderick.ui.componentes.botones.BotonPeru
 import utez.edu.mx.integradoraderick.ui.componentes.camposdetexto.CampoDeTextoPeru
 import utez.edu.mx.integradoraderick.ui.componentes.dialogos.AlertPeru
+import utez.edu.mx.integradoraderick.ui.utils.Routes
 import utez.edu.mx.integradoraderick.viewmodel.RegisterUserViewModel
 
 @Composable
@@ -153,14 +149,14 @@ fun RegistroScreen(viewModel: RegisterUserViewModel, navController: NavControlle
             confirmText = "Ir al login",
             onConfirm = {
                 showSuccessDialog = false
-                navController.navigate("Login"){
-                    popUpTo("Login"){inclusive = true}
+                navController.navigate(Routes.Login.route){
+                    popUpTo(Routes.Login.route){inclusive = true}
                 }
             },
             dismissText = "",
             onDismiss = { showSuccessDialog = false
-                navController.navigate("Login"){
-                    popUpTo("Login"){inclusive = true}
+                navController.navigate(Routes.Login.route){
+                    popUpTo(Routes.Login.route){inclusive = true}
                 }
             }
         )

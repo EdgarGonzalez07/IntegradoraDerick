@@ -22,13 +22,12 @@ class LoginViewModel(
                 onResult(false, "No hay conexion a internet. Verifica tu conexion.")
                 return@launch
             }
-
             val result =repo.loguear(Usuario(username = "", email = email, password = password))
             if(result.isSuccess){
                 val user = result.getOrNull()
                 if (user != null) {
                     controlador.guardarUsuario(user.id, user.username, user.email)
-                    onResult(true, null)
+                    onResult(true, "Se guardo correctamente")
                 } else {
                     onResult(false, "Datos corruptos o dañados.")
                 }

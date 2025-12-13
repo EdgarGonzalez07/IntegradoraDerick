@@ -1,4 +1,4 @@
-package utez.edu.mx.integradoraderick.ui
+package utez.edu.mx.integradoraderick
 
 import Navigation
 import android.os.Bundle

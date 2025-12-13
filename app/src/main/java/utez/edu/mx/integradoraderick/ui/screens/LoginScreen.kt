@@ -1,7 +1,5 @@
 package utez.edu.mx.integradoraderick.ui.screens
 
-import android.util.Log
-import android.util.Log.v
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,13 +8,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,16 +22,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import kotlinx.coroutines.launch
 import utez.edu.mx.integradoraderick.R
-import utez.edu.mx.integradoraderick.data.remote.RetrofitCliente
 import utez.edu.mx.integradoraderick.ui.componentes.botones.BotonPeru
 import utez.edu.mx.integradoraderick.ui.componentes.botones.BotonPeruanisimo
 import utez.edu.mx.integradoraderick.ui.componentes.dialogos.AlertPeru
+import utez.edu.mx.integradoraderick.ui.utils.Routes
 import utez.edu.mx.integradoraderick.viewmodel.LoginViewModel
 
 @Composable
@@ -109,9 +99,7 @@ fun LoginScreen(
                 } else {
                     viewModel.logear(email, password) { success, message ->
                         if(success){
-                            navController.navigate("Main") {
-                                popUpTo("login") { inclusive = true}
-                            }
+                            navController.navigate(Routes.Main.route) { popUpTo(Routes.Login.route) { inclusive = true} }
                         } else {
                             errormsg = message ?:"Datos no coincidentes"
                             showDialog = true
@@ -126,7 +114,7 @@ fun LoginScreen(
         BotonPeruanisimo(
             "Registrate aqui si no tienes una cuenta.",
             {
-                navController.navigate("Register"){
+                navController.navigate(Routes.Register.route){
                     launchSingleTop = true
                     restoreState = true
                 }

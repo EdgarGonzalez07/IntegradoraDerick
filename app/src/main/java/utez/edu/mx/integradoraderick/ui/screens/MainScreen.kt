@@ -13,6 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import utez.edu.mx.integradoraderick.sensor.GyroscopeHandler
 import utez.edu.mx.integradoraderick.ui.componentes.AlmacenAdminCard
+import utez.edu.mx.integradoraderick.ui.utils.Routes
 import utez.edu.mx.integradoraderick.viewmodel.AlmacenViewModel
 import utez.edu.mx.integradoraderick.viewmodel.GyroAction
 
@@ -51,7 +52,7 @@ fun MainScreen(
     LaunchedEffect(gyroAction) {
         when (gyroAction) {
             GyroAction.CREATE -> {
-                navController.navigate("NewProduct")
+                navController.navigate(Routes.NewProduct.route)
                 viewModel.clearAction()
             }
 
