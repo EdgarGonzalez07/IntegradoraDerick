@@ -166,5 +166,8 @@ fun AlmacenDetailScreen(
                 navController.popBackStack()
             }
         )
+        BotonPeru("Editar", {
+            showEditDialog = true
+        })
     }
 }
