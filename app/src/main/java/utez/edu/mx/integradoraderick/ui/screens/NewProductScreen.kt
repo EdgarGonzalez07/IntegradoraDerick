@@ -78,7 +78,7 @@ fun NewProductScreen(){
                 Image(
                     painter = painterResource(id = R.drawable.agregar),
                     contentDescription = "Logo",
-                    modifier = Modifier.size(size = 300.dp)
+                    modifier = Modifier.size(size = 200.dp)
                 )
 
             } else {
