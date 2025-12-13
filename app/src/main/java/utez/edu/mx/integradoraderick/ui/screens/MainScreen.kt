@@ -1,53 +1,40 @@
 package utez.edu.mx.integradoraderick.ui.screens
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+
+import android.content.Context
+import android.hardware.Sensor
+import android.hardware.SensorManager
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
+import androidx.compose.foundation.lazy.items
+import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
 import utez.edu.mx.integradoraderick.ui.componentes.AlmacenAdminCard
-/*
+import utez.edu.mx.integradoraderick.viewmodel.AlmacenViewModel
+
 @Composable
-fun MainScreen(viewModel: AlmacenViewModel, navController: NavController) {
-    Column(
-        modifier = Modifier.fillMaxWidth()
-            .padding(30.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(40.dp)
-    ) {
+fun MainScreen(viewModel: AlmacenViewModel) {
+    val context = LocalContext.current
+    val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+    val gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
 
-        Text(
-            text = "PERU WHAREHOUSE",
-            fontSize = 25.sp
-        )
+    // Inicializa y registra el sensor
+    LaunchedEffect(Unit) {
+        viewModel.initGyroscope(sensorManager, gyroscope)
+        viewModel.registerGyro()
+        viewModel.loadAlmacenes()
+    }
 
-        Spacer(modifier = Modifier.padding(15.dp))
+    DisposableEffect(Unit) {
+        onDispose { viewModel.unregisterGyro() }
+    }
 
-        val almacen by viewModel.almacen.collectAsStateWithLifecycle()
-        LazyColumn(
-            modifier = Modifier.fillMaxWidth().padding(10.dp),
-            verticalArrangement = Arrangement.spacedBy(15.dp)
-        ) {
-            items(almacen) { almacen ->
-                AlmacenAdminCard(
-                    almacen = almacen,
-                    onShow = {
-                        viewModel.clickAlmacen(it)
-                        navController.navigate("fullView")
-                    }
-                )
-            }
+    val almacenes by viewModel.almacenes
+
+    LazyColumn {
+        items(almacenes) { almacen ->
+            AlmacenAdminCard(
+                almacen = almacen,
+                onShow = { viewModel.select(it) }
+            )
         }
     }
 }
-
- */
