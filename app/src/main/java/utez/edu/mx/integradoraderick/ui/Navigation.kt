@@ -8,9 +8,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import utez.edu.mx.integradoraderick.data.model.usuarios.UsuarioRepository
 import utez.edu.mx.integradoraderick.ui.screens.LoginScreen
+import utez.edu.mx.integradoraderick.ui.screens.MainScreen
 import utez.edu.mx.integradoraderick.ui.screens.NewProductScreen
 import utez.edu.mx.integradoraderick.ui.screens.RegistroScreen
 import utez.edu.mx.integradoraderick.ui.utils.ControladorSesiones
+import utez.edu.mx.integradoraderick.viewmodel.AlmacenViewModel
 import utez.edu.mx.integradoraderick.viewmodel.LoginViewModel
 import utez.edu.mx.integradoraderick.viewmodel.RegisterUserViewModel
 import utez.edu.mx.integradoraderick.viewmodel.factorys.LoginViewModelFactory
@@ -32,6 +34,7 @@ fun Navigation() {
     val regviewModel: RegisterUserViewModel = viewModel(factory = RegisterUserViewModelFactory(userRepo, context))
 
 
+    val almacenViewModel: AlmacenViewModel = viewModel()
 
 
 
@@ -42,6 +45,7 @@ fun Navigation() {
 
         composable("Login") { LoginScreen(logviewModel, navController) }
         composable("Register") { RegistroScreen(regviewModel, navController) }
+        composable("Main") { MainScreen(almacenViewModel) } // Aquí agregamos tu MainScreen
         composable("NewProduct"){ NewProductScreen() }
         /*composable("FullView"){ FullView() }
         composable("Main"){ MainScreen() }*/
