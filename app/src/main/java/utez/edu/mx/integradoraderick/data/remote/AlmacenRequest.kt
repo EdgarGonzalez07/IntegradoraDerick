@@ -4,5 +4,5 @@ data class AlmacenRequest(
     val name: String,
     val location: String,
     val capacity: Int,
-    val imgUrl: String
+    val image: String
 )

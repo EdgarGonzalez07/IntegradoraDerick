@@ -1,15 +1,18 @@
 package utez.edu.mx.integradoraderick.data.remote
 
+import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Part
 import retrofit2.http.Path
-import utez.edu.mx.integradoraderick.data.model.almacenes.Almacen
 import utez.edu.mx.integradoraderick.data.model.almacenes.AlmacenResponse
 import utez.edu.mx.integradoraderick.data.model.usuarios.Usuario
+import utez.edu.mx.integradoraderick.data.model.upload.UploadResponse
 
 interface ApiService {
 
@@ -39,5 +42,11 @@ interface ApiService {
 
     @DELETE("/almacenes/{id}")
     suspend fun borrarAlmacen(@Path("id") id: Int): Response<Void>
+
+    @Multipart
+    @POST("/upload")
+    suspend fun uploadImage(
+        @Part image: MultipartBody.Part
+    ): Response<UploadResponse>
 
 }

@@ -1,12 +1,14 @@
 package utez.edu.mx.integradoraderick.viewmodel
 
 import android.content.Context
+import android.net.Uri
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
 import utez.edu.mx.integradoraderick.data.remote.AlmacenRequest
 import utez.edu.mx.integradoraderick.data.model.almacenes.AlmacenResponse
 import utez.edu.mx.integradoraderick.data.repository.AlmacenRepository
@@ -81,5 +83,24 @@ class AlmacenViewModel(
 
     fun clearAction() {
         _gyroAction.value = GyroAction.NONE
+    }
+
+    fun uploadImage(
+        imagePart: MultipartBody.Part,
+        onResult: (String?) -> Unit
+    ) {
+        viewModelScope.launch {
+            try {
+                val response = repository.uploadImage(imagePart)
+                if (response.isSuccessful) {
+                    onResult(response.body()?.url)
+                } else {
+                    onResult(null)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                onResult(null)
+            }
+        }
     }
 }

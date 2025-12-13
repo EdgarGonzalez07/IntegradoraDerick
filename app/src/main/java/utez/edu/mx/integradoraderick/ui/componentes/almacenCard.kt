@@ -40,7 +40,11 @@ fun AlmacenAdminCard(
                 verticalAlignment = Alignment.Top
             ) {
                 AsyncImage(
-                    model = almacen.imgUrl.ifBlank { R.drawable.agregar },
+                    model = when {
+                        almacen.image.isBlank() -> R.drawable.agregar
+                        almacen.image.startsWith("http") -> almacen.image
+                        else -> R.drawable.agregar
+                    },
                     contentDescription = "Imagen del almacén",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier

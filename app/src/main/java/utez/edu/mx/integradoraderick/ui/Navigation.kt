@@ -7,6 +7,7 @@ import androidx.navigation.compose.rememberNavController
 import utez.edu.mx.integradoraderick.data.model.usuarios.UsuarioRepository
 import utez.edu.mx.integradoraderick.data.repository.AlmacenRepository
 import utez.edu.mx.integradoraderick.ui.screens.LoginScreen
+import utez.edu.mx.integradoraderick.ui.screens.NewProductScreen
 import utez.edu.mx.integradoraderick.ui.screens.RegistroScreen
 import utez.edu.mx.integradoraderick.ui.utils.ControladorSesiones
 import utez.edu.mx.integradoraderick.ui.utils.Routes

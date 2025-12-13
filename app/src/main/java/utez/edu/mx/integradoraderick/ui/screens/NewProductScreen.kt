@@ -1,9 +1,9 @@
-import android.R.attr.password
+package utez.edu.mx.integradoraderick.ui.screens
+
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -31,25 +31,47 @@ import utez.edu.mx.integradoraderick.data.remote.AlmacenRequest
 import utez.edu.mx.integradoraderick.ui.componentes.botones.BotonPeru
 import utez.edu.mx.integradoraderick.ui.componentes.camposdetexto.CampoDeTextoPeru
 import utez.edu.mx.integradoraderick.viewmodel.AlmacenViewModel
+import android.Manifest
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.ui.platform.LocalContext
+import utez.edu.mx.integradoraderick.ui.utils.createImageFile
+import utez.edu.mx.integradoraderick.ui.utils.uriToMultipart
 
 @Composable
 fun NewProductScreen(
     navController: NavController,
     viewModel: AlmacenViewModel
 ) {
+    val context = LocalContext.current
 
+    var image by remember { mutableStateOf<Uri?>(null) }
     var name by remember { mutableStateOf("") }
     var location by remember { mutableStateOf("") }
     var capacity by remember { mutableStateOf("") }
-    var imageUri by remember { mutableStateOf<Uri?>(null) }
-    var errorMessage by remember { mutableStateOf("") }
-    var showError by remember { mutableStateOf(false) }
 
-    val imagePickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri ->
-        imageUri = uri
-    }
+    val cameraLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+            if (!success) image = null
+        }
+
+    val permissionLauncher =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { granted ->
+            if (granted) {
+                val uri = createImageFile(context)
+                image = uri
+                cameraLauncher.launch(uri)
+            }
+        }
+
+    val galleryLauncher =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.GetContent()
+        ) { uri ->
+            image = uri
+        }
 
     Column(
         modifier = Modifier
@@ -63,12 +85,10 @@ fun NewProductScreen(
         Spacer(modifier = Modifier.height(10.dp))
 
         Box(
-            modifier = Modifier
-                .size(200.dp)
-                .clickable { imagePickerLauncher.launch("image/*") },
+            modifier = Modifier.size(200.dp),
             contentAlignment = Alignment.Center
         ) {
-            if (imageUri == null) {
+            if (image == null) {
                 Image(
                     painter = painterResource(id = R.drawable.agregar),
                     contentDescription = null,
@@ -76,12 +96,33 @@ fun NewProductScreen(
                 )
             } else {
                 AsyncImage(
-                    model = imageUri,
+                    model = image,
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )
             }
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            BotonPeru(
+                text = "Cámara",
+                modifier = Modifier.size(130.dp, 45.dp),
+                onClick = {
+                    permissionLauncher.launch(Manifest.permission.CAMERA)
+                }
+            )
+            BotonPeru(
+                text = "Galería",
+                modifier = Modifier.size(130.dp, 45.dp),
+                onClick = {
+                    galleryLauncher.launch("image/*")
+                }
+            )
         }
 
         Spacer(modifier = Modifier.height(15.dp))
@@ -98,25 +139,25 @@ fun NewProductScreen(
             text = "Agregar producto",
             modifier = Modifier.size(180.dp, 50.dp),
             onClick = {
-                if (name.isNotEmpty() && location.isNotEmpty() && capacity.isNotEmpty()) {
+                if (image == null) return@BotonPeru
+
+                val imagePart = uriToMultipart(context, image!!)
+
+                viewModel.uploadImage(imagePart) { imageUrl ->
+                    if (imageUrl == null) return@uploadImage
+
                     val almacen = AlmacenRequest(
                         name = name,
                         location = location,
                         capacity = capacity.toInt(),
-                        imgUrl = "https://via.placeholder.com/300"
+                        image = imageUrl
                     )
+
                     viewModel.create(almacen) { success ->
-                        if(success){
-                            viewModel.loadAlmacenes()
+                        if (success) {
                             navController.popBackStack()
-                        } else {
-                            errorMessage = "Error al agregar el producto"
-                            showError = true
                         }
                     }
-                } else {
-                    errorMessage = "LLENA TODOS LOS CAMPOS"
-                    showError = true
                 }
             }
         )
